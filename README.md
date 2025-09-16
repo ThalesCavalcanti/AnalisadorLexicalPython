@@ -102,13 +102,6 @@ Token('EOF', None, line=7, col=15)
 * Python 3.7 ou superior
 * Nenhuma dependência externa além da biblioteca padrão
 
-## Extensões Futuras
-
-* Suporte a strings literais
-* Suporte a chaves `{}` e ponto-e-vírgula `;`
-* Identificadores com caracteres Unicode
-* Integração com um parser sintático
-
 ## Membros
 
 * Thales Alexandre Dos Santos Cavalcanti
