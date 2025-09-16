@@ -102,6 +102,11 @@ Token('EOF', None, line=7, col=15)
 * Python 3.7 ou superior
 * Nenhuma dependência externa além da biblioteca padrão
 
+  ## Membros
+
+  * Thales Alexandre Dos Santos Cavalcanti
+  * Sâmi Gabriele De Andrade Carvalho
+
 ## Extensões Futuras
 
 * Suporte a strings literais
