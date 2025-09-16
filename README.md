@@ -106,3 +106,5 @@ Token('EOF', None, line=7, col=15)
 
 * Thales Alexandre Dos Santos Cavalcanti
 * Sâmi Gabriele De Andrade Carvalho
+* Ygor Vinnicius Rodrigues de Pontes
+* Lauane Louise Viana Santos 
