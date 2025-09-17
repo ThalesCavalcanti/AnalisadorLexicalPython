@@ -1,8 +1,21 @@
 from analisador_lexical import Lexer, LexicalError
 
-src = "int y = 123+321*2/4-6 \n x>y != x<y == x<=y >= y \n a(b) = 1.5 + 2.0 \n print if else float int \n #comentario de linha unica \n /* comentario de \n multiplas linhas */ "
-src_erro = "@123"
-lex = Lexer(src)
-tokens = lex.tokenize()
-for t in tokens:
-    print(t)
+def main():
+    filename = "programa.mc"  # Change to your .mc file name
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            src = f.read()
+    except FileNotFoundError:
+        print(f"Arquivo '{filename}' não encontrado.")
+        return
+
+    lex = Lexer(src)
+    try:
+        tokens = lex.tokenize()
+        for t in tokens:
+            print(t)
+    except LexicalError as e:
+        print(f"Erro léxico: {e}")
+
+if __name__ == "__main__":
+    main()

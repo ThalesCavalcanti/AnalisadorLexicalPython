@@ -1,4 +1,3 @@
-
 """
  - identificadores: (a-z | A-Z | _)(a-z | A-Z | _ | 0-9)*
  - operadores aritméticos: + - * /
@@ -39,7 +38,8 @@ class Lexer:
         'float': 'FLOAT',
         'print': 'PRINT',
         'if': 'IF',
-        'else': 'ELSE'
+        'else': 'ELSE',
+        'while' : 'WHILE'
     }
 
     def __init__(self, text: str):
@@ -68,6 +68,14 @@ class Lexer:
         if peek_pos >= self.length:
             return None
         return self.text[peek_pos]
+
+    def peek_next_non_whitespace(self):
+        pos = self.pos
+        while pos < self.length and self.text[pos] in ' \t\n':
+            pos += 1
+        if pos < self.length:
+            return self.text[pos]
+        return None
 
     def error(self, message, char=None, line=None, col=None):
         raise LexicalError(message, line or self.line, col or self.col, char)
@@ -121,6 +129,9 @@ class Lexer:
             while self.current_char is not None and '0' <= self.current_char <= '9':
                 num_str += self.current_char
                 self.advance()
+        #segundo ponto
+        if self.current_char == ".":
+            self.error("Invalid numeric constant: multiple decimal points", '.')
         return Token('NUMBER', num_str, start_line, start_col)
 
     def identifier_or_keyword(self) -> Token:
@@ -164,7 +175,7 @@ class Lexer:
                 self.advance()
                 return t
             if self.current_char == '/':
-                # divisão (observamos que '/*' já foi tratado acima)
+                # divisão 
                 t = Token('DIV', '/', self.line, self.col)
                 self.advance()
                 return t
@@ -177,7 +188,7 @@ class Lexer:
                 t = Token('RPAREN', ')', self.line, self.col)
                 self.advance()
                 return t
-            # relacionais e atribuição (preferir match mais longo)
+            # relacionais e atribuição 
             if self.current_char == '>':
                 start_line, start_col = self.line, self.col
                 if self.peek() == '=':
@@ -209,9 +220,14 @@ class Lexer:
                 else:
                     self.advance()
                     return Token('ASSIGN', '=', start_line, start_col)
-            # números (inteiros ou com parte decimal)
+            # números inteiros ou com parte decimal
             if ('0' <= self.current_char <= '9') or (self.current_char == '.' and self.peek() is not None and '0' <= self.peek() <= '9'):
-                return self.number()
+                token = self.number()
+                # Check for '.' after number (possibly after whitespace)
+                next_char = self.peek_next_non_whitespace()
+                if next_char == '.':
+                    self.error("Invalid numeric constant: unexpected '.' after number", '.', token.line, token.column)
+                return token
             # identificadores / palavras reservadas
             if self.current_char in string.ascii_letters or self.current_char == '_':
                 return self.identifier_or_keyword()
@@ -227,23 +243,3 @@ class Lexer:
             if tok.type == 'EOF':
                 break
         return tokens
-
-
-# demo de uso quando executado como script
-if __name__ == '__main__':
-    sample = '''int a = 123
-float b = 123.456
-print(a + b * (a - .456) / 2)
-# comentário de uma linha
-/* comentário
-   multilinha */
-if a >= b
-else a = a == b
-'''
-    lx = Lexer(sample)
-    try:
-        toks = lx.tokenize()
-        for t in toks:
-            print(t)
-    except LexicalError as e:
-        print("Erro léxico:", e)
